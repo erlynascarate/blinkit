@@ -1,8 +1,113 @@
+import { useEffect, useRef, useState } from "react"
+import Product from "../components/Product"
+
 const Home = () => {
+    const [categories, setCategories] = useState([])
+    const [featuredProducts, setFeaturedProducts] = useState([])
+    const carouselRef = useRef(null)
+    const [canScrollLeft, setCanScrollLeft] = useState(false)
+    const [canScrollRight, setCanScrollRight] = useState(false)
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await fetch("https://api.escuelajs.co/api/v1/categories")
+            const categories = await res.json()
+
+            setCategories([...categories, ...categories])
+        }
+        fetchData()
+    }, [])
+    useEffect(() => {
+        const fetchCategoryProducts = async () => {
+            const res = await fetch("https://api.escuelajs.co/api/v1/categories/1/products")
+            const products = await res.json()
+
+            setFeaturedProducts(products)
+        }
+        fetchCategoryProducts()
+    }, [])
+
+    const updateScrollButtons = () => {
+        const carousel = carouselRef.current
+        if (!carousel) return
+
+        const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth
+        setCanScrollLeft(carousel.scrollLeft > 0)
+        setCanScrollRight(carousel.scrollLeft < maxScrollLeft - 1)
+    }
+
+    const scrollCarousel = (direction) => {
+        const carousel = carouselRef.current
+        if (!carousel) return
+
+        const firstCard = carousel.querySelector("[data-card]")
+        const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 240
+        const gap = 16
+
+        carousel.scrollBy({ left: direction * (cardWidth + gap) * 5, behavior: "smooth" })
+    }
+    useEffect(() => {
+        updateScrollButtons()
+    }, [featuredProducts])
+
+    useEffect(() => {
+        const handleResize = () => updateScrollButtons()
+        window.addEventListener("resize", handleResize)
+        return () => window.removeEventListener("resize", handleResize)
+    }, [])
     return (
-        <main className="mb-100">
-            <h1>Welcome to the Home Page</h1>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam porro distinctio magnam illo, in ipsam veritatis voluptate obcaecati fuga aut assumenda optio maxime eveniet commodi rem earum maiores asperiores? Velit dignissimos quia, ullam animi earum rerum est illum, asperiores accusantium accusamus exercitationem dolorem dolore vitae natus cupiditate error veritatis iusto repellendus mollitia. Animi similique necessitatibus eius, explicabo modi architecto officiis sunt vero aspernatur, commodi provident possimus dicta, suscipit voluptatem officia a ratione doloribus iste! Qui modi deleniti natus est nulla iste error distinctio excepturi dolor cumque. Ipsa, adipisci dicta. Repudiandae optio adipisci eos rerum eius. Accusamus vero vel dolorem ab, unde veniam ipsum. Est asperiores architecto, aut adipisci iure eius vel porro autem quam cumque sed nisi! Perspiciatis maxime, tempora, earum vero tenetur veritatis a quia hic nam, ratione odio omnis! Asperiores ullam distinctio voluptatum, explicabo eius adipisci, quidem sint accusamus dignissimos id voluptatibus ipsa molestiae accusantium exercitationem dicta optio. A, consequatur? Omnis molestias laborum, nihil quas dolorem ratione nemo modi repudiandae nostrum et aliquid unde doloribus alias quis sapiente quam sunt repellat maiores cupiditate voluptas assumenda. Voluptate, dolorum. Tempore consectetur explicabo repellat blanditiis quisquam pariatur sequi, tempora nulla, illo aspernatur quis quia hic neque eveniet? Labore nesciunt aliquid ducimus. Quam asperiores, voluptatum nesciunt hic explicabo provident doloremque. Dolor laboriosam vitae quod voluptates dicta saepe rem? Perferendis neque qui quod minima repudiandae quia itaque eligendi provident? Illo pariatur excepturi ipsam quia qui ratione asperiores tempora enim eos velit quam temporibus nostrum voluptates sed reiciendis tempore, beatae minima, incidunt sequi quod suscipit a laboriosam illum aspernatur. Neque, adipisci accusamus consectetur minus sequi autem eaque ab inventore nulla blanditiis explicabo, cupiditate provident earum veritatis cumque est corporis exercitationem unde, illum praesentium ullam? Et, asperiores laborum perspiciatis optio odit accusamus sit natus, velit tempore ipsam ea totam? Vero, sequi maxime debitis nemo veniam ullam itaque at tempora illum cupiditate voluptas et harum inventore laboriosam, velit officiis. Id quia odio vero commodi, molestias ipsa cupiditate saepe laudantium repellendus a. Est neque eum sequi maiores laudantium, saepe maxime eveniet dignissimos quod necessitatibus culpa nemo mollitia ipsa repudiandae adipisci provident ratione consequatur cupiditate. Assumenda rerum, nam earum commodi saepe, nemo modi accusamus atque distinctio sed natus vel animi alias! Odit vel error similique dignissimos eveniet cum sed veniam, ullam illo commodi distinctio, non et cupiditate, expedita doloribus dicta asperiores quae aperiam fugit reiciendis. Doloremque omnis, officiis, facere expedita corrupti labore ipsam debitis modi fugiat dolorum dignissimos.</p>
+        <main className="container mx-auto py-2 px-3">
+            <img
+                className="block w-[calc(100%+1.5rem)] max-w-none -mx-3"
+                src="https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=2700/layout-engine/2026-01/Frame-1437256605-2-2.jpg"
+                alt="Hero" />
+            <h2 className="font-bold text-lg">Shop by category</h2>
+            <section className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] lg:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 mt-4">
+                {categories.map((category, index) => (
+                    <figure key={index}>
+                        <img
+                            className="w-full h-auto rounded-2xl"
+                            src={category.image} 
+                            alt={category.name}
+                            width={140}
+                            height={140}
+                            loading="lazy" />
+                        <figcaption className="mt-2 text-center">{category.name}</figcaption>
+                    </figure>
+                ))}
+            </section>
+            <section className="mt-10">
+                <div className="flex items-center justify-between">
+                    <h2 className="font-bold text-lg">Category 1 products</h2>
+                    <div className="hidden md:flex gap-2">
+                        {canScrollLeft && (
+                            <button
+                                type="button"
+                                onClick={() => scrollCarousel(-1)}
+                                className="h-9 w-9 rounded-full border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-50"
+                                aria-label="Scroll products left">
+                                <span aria-hidden="true">&lt;</span>
+                            </button>
+                        )}
+                        {canScrollRight && (
+                            <button
+                                type="button"
+                                onClick={() => scrollCarousel(1)}
+                                className="h-9 w-9 rounded-full border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-50"
+                                aria-label="Scroll products right">
+                                <span aria-hidden="true">&gt;</span>
+                            </button>
+                        )}
+                    </div>
+                </div>
+                <div
+                    ref={carouselRef}
+                    onScroll={updateScrollButtons}
+                    className="mt-4 flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4">
+                    {featuredProducts.map((product) => (
+                        <Product key={product.id} className="min-w-45 sm:min-w-55" product={product} />
+                    ))}
+                </div>
+            </section>
         </main>
     )
 }
