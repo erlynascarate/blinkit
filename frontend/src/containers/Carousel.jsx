@@ -67,7 +67,7 @@ const Carousel = (props) => {
 
     return (
         <div>
-            <h2 className="mb-4 font-bold text-2xl">{name}</h2>
+            <h2 className="mb-4 font-bold text-2xl first-letter:uppercase">{name}</h2>
             <div className="relative">
                 {canScrollLeft && (
                     <Button onClick={() => scrollCarousel(-1)} className="left-0 -translate-x-1/2" title="Scroll products left">

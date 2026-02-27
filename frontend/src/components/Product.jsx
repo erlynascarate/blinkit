@@ -13,7 +13,7 @@ const Product = (props) => {
                 width={320}
                 height={320}
                 loading="lazy" />
-            <h3 className="mt-3 text-sm font-semibold text-gray-900">{title}</h3>
+            <h3 className="mt-3 text-sm font-semibold capitalize text-gray-900 wrap-break-word">{title}</h3>
             <p className="mt-1 text-sm text-gray-500 line-clamp-2" title={description}>
                 {description}
             </p>

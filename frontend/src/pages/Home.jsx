@@ -11,8 +11,6 @@ const Home = () => {
             const categories = await res.json()
 
             const firstFive = categories.slice(0, 5)
-
-            console.log(firstFive);
             
             setCategories([...firstFive, ...firstFive])
         }
@@ -39,7 +37,7 @@ const Home = () => {
                             width={140}
                             height={140}
                             loading="lazy" />
-                        <figcaption className="mt-2 text-center">{category.name}</figcaption>
+                        <figcaption className="mt-2 text-center first-letter:uppercase">{category.name}</figcaption>
                     </figure>
                 ))}
             </section>
