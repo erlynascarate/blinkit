@@ -1,5 +1,5 @@
 // Configuración de la URL base del API
-export const API_URL = import.meta.env.VITE_API_URL || '/api'
+export const API_URL = 'https://blinkit-lbqt.onrender.com/api' || '/api'
 
 // Helper para hacer peticiones
 export const apiRequest = async (endpoint, options = {}) => {
