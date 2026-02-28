@@ -1,12 +1,11 @@
-import User from "../models/User"
+import User from "../models/User.js"
+import bcrypt from "bcryptjs"
 
 export const registerUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body
+        const { email, password } = req.body
 
-        // Aquí podrías agregar validaciones adicionales, como verificar si el correo ya existe
-
-        const newUser = new User({ name, email, password })
+        const newUser = new User({ email, password })
         await newUser.save()
 
         res.status(201).json({ message: "User registered successfully", user: newUser })
@@ -25,8 +24,8 @@ export const loginUser = async (req, res) => {
             return res.status(404).json({ message: "User not found" })
         }
 
-        // Aquí deberías comparar la contraseña con la almacenada (usando bcrypt, por ejemplo)
-        if (user.password !== password) {
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
             return res.status(401).json({ message: "Invalid credentials" })
         }
 

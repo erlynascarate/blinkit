@@ -3,13 +3,15 @@ import Header from "./components/Header"
 import Home from "./pages/Home"
 import Products from "./pages/Products";
 import Footer from "./components/Footer";
-import Login from "./pages/Login";
+import LoginPage from "./pages/LoginPage";
+import Register from "./pages/Register";
 
 function App() {
 	const location = useLocation()
 	const isLoginRoute = location.pathname === "/login"
+	const isRegisterRoute = location.pathname === "/register"
 	const backgroundLocation = location.state?.backgroundLocation
-	const modalBackgroundLocation = backgroundLocation || (isLoginRoute ? { ...location, pathname: "/" } : null)
+	const modalBackgroundLocation = backgroundLocation || (isLoginRoute || isRegisterRoute ? { ...location, pathname: "/" } : null)
 
 	return (
 		<>
@@ -19,12 +21,14 @@ function App() {
 		<Routes location={modalBackgroundLocation || location}>
 			<Route path="/" element={<Home />} />
 			<Route path="/products" element={<Products />} />
-			<Route path="/login" element={<Login />} />
+			<Route path="/login" element={<LoginPage />} />
+			<Route path="/register" element={<Register />} />
 		</Routes>
 
-		{isLoginRoute && (
+		{(isLoginRoute || isRegisterRoute) && (
 			<Routes>
-				<Route path="/login" element={<Login />} />
+				<Route path="/login" element={<LoginPage />} />
+				<Route path="/register" element={<Register />} />
 			</Routes>
 		)}
 		

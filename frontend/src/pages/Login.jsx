@@ -1,9 +1,19 @@
-import { useLocation, useNavigate } from "react-router"
+import { Link, useLocation, useNavigate } from "react-router"
+import { useState } from "react"
 
-const Login = () => {
+const Login = ({ 
+    title = "India's last minute app",
+    buttonText = "Continue",
+    linkText = "Sign up",
+    linkTo = "/register",
+    linkPrefix = "Log in or ",
+    onSubmit
+}) => {
     const navigate = useNavigate()
     const location = useLocation()
     const hasBackgroundLocation = Boolean(location.state?.backgroundLocation)
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
 
     const closeModal = () => {
         if (hasBackgroundLocation) {
@@ -14,10 +24,32 @@ const Login = () => {
         navigate("/")
     }
 
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setError("")
+        setLoading(true)
+
+        const formData = new FormData(e.target)
+        const data = {
+            email: formData.get("email"),
+            password: formData.get("password")
+        }
+
+        try {
+            await onSubmit(data)
+            closeModal()
+        } catch (err) {
+            setError(err.message || "Something went wrong")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <div className="fixed inset-0 z-50 flex justify-center items-center p-4 bg-black/50" onClick={closeModal}>
             <form 
                 onClick={(e) => e.stopPropagation()} 
+                onSubmit={handleSubmit}
                 className="relative flex flex-col gap-4 rounded-3xl p-6 sm:px-26 w-full max-w-lg text-center bg-white"
             > 
                 <button
@@ -39,8 +71,18 @@ const Login = () => {
                     <path d="M54.9219 37.0515L55.5097 38.9507C55.2428 39.2061 54.9048 39.4134 54.4959 39.5723C54.0927 39.7313 53.698 39.8108 53.3118 39.8108C52.7552 39.8108 52.2582 39.6887 51.8209 39.4446C51.3836 39.1948 51.0428 38.8485 50.7986 38.4056C50.5544 37.9741 50.4323 37.4773 50.4323 36.9153V32.9364H49.2481V30.6038H50.4323V27.4307H53.2607V30.6038H55.1263V32.9364H53.2607V36.3702C53.2607 36.6598 53.3373 36.8954 53.4907 37.0771C53.644 37.2588 53.84 37.3496 54.0785 37.3496C54.2489 37.3496 54.4079 37.324 54.5556 37.273C54.7032 37.2219 54.8253 37.148 54.9219 37.0515Z" fill="#0C831F"/>
                     <path d="M45.7183 27.4307H48.6755V29.7382H45.7183V27.4307Z" fill="#0C831F"/>
                 </svg>
-                <h2 className="text-2xl font-bold">India's last minute app</h2>
-                <label className="text-gray-800" htmlFor="email">Log in or Sign up</label>
+                <h2 className="text-2xl font-bold">{title}</h2>
+                <p>
+                    {linkPrefix}<Link className="text-blue-600 underline" to={linkTo}>{linkText}</Link>
+                </p>
+                
+                {error && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded-xl text-sm">
+                        {error}
+                    </div>
+                )}
+                
+                <label className="-mb-3 self-start" htmlFor="email">Email</label>
                 <input
                     className="peer rounded-xl border border-gray-300 focus:border-gray-400 px-3 py-2 focus:outline-none"
                     id="email"
@@ -49,12 +91,22 @@ const Login = () => {
                     type="email"
                     required
                 />
+                <label className="-mb-3 self-start" htmlFor="password">Password</label>
+                <input
+                    className="peer rounded-xl border border-gray-300 focus:border-gray-400 px-3 py-2 focus:outline-none"
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    type="password"
+                    required
+                />
 
                 <button 
-                    className="rounded-xl px-4 py-2 font-semibold text-white bg-gray-400 peer-valid:bg-green-700 peer-valid:cursor-pointer" 
+                    className="rounded-xl px-4 py-2 font-semibold text-white bg-gray-400 peer-valid:bg-green-700 peer-valid:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
                     type="submit"
+                    disabled={loading}
                 >
-                    Continue
+                    {loading ? "Loading..." : buttonText}
                 </button>
             </form>
         </div>
