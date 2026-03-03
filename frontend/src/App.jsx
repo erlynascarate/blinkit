@@ -11,6 +11,7 @@ function App() {
 	const isLoginRoute = location.pathname === "/login"
 	const isRegisterRoute = location.pathname === "/register"
 	const backgroundLocation = location.state?.backgroundLocation
+
 	const modalBackgroundLocation = backgroundLocation || (isLoginRoute || isRegisterRoute ? { ...location, pathname: "/" } : null)
 
 	return (

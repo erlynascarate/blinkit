@@ -1,7 +1,10 @@
 import Login from "./Login"
 import { apiRequest } from "../config/api"
+import useAuthStore from "../store/authStore"
 
 const LoginPage = () => {
+    const { login } = useAuthStore()
+
     const handleLogin = async (data) => {
         const response = await apiRequest("/login", {
             method: "POST",
@@ -14,8 +17,7 @@ const LoginPage = () => {
             throw new Error(result.message || "Login failed")
         }
 
-        // Guardar el token o datos del usuario
-        localStorage.setItem("user", JSON.stringify(result.user || { email: data.email }))
+        login(result.user || { email: data.email })
 
         return result
     }

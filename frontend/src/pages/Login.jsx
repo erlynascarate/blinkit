@@ -1,14 +1,16 @@
 import { Link, useLocation, useNavigate } from "react-router"
 import { useState } from "react"
 
-const Login = ({ 
-    title = "India's last minute app",
-    buttonText = "Continue",
-    linkText = "Sign up",
-    linkTo = "/register",
-    linkPrefix = "Log in or ",
-    onSubmit
-}) => {
+const Login = (props) => {
+    const { 
+        title = "India's last minute app",
+        buttonText = "Log in",
+        linkText = "Sign up",
+        linkTo = "/register",
+        linkPrefix = "Log in or ",
+        onSubmit
+    } = props
+
     const navigate = useNavigate()
     const location = useLocation()
     const hasBackgroundLocation = Boolean(location.state?.backgroundLocation)

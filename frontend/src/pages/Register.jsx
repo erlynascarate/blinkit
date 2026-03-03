@@ -1,7 +1,10 @@
 import Login from "./Login"
 import { apiRequest } from "../config/api"
+import useAuthStore from "../store/authStore"
 
 const Register = () => {
+    const { login } = useAuthStore()
+
     const handleRegister = async (data) => {
         const response = await apiRequest("/register", {
             method: "POST",
@@ -13,6 +16,8 @@ const Register = () => {
         if (!response.ok) {
             throw new Error(result.message || "Registration failed")
         }
+
+        login(result.user || { email: data.email })
 
         return result
     }

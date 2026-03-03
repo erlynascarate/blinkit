@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router"
 import useSearchStore from "../store/searchStore"
-import useAuth from "../hooks/useAuth"
+import useAuthStore from "../store/authStore"
 
 const Header = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { searchTerm, setSearchTerm } = useSearchStore()
     const [inputValue, setInputValue] = useState(searchTerm)
-    const { user, logout } = useAuth()
+    const { user, logout } = useAuthStore()
 
     const handleSearch = (e) => setInputValue(e.target.value)
 
@@ -53,12 +53,17 @@ const Header = () => {
             {user ? (
                 <div className="max-lg:col-start-2 max-lg:row-start-1 flex items-center gap-2">
                     <div className="flex flex-col items-end">
-                        <span className="max-lg:hidden text-sm font-semibold text-zinc-700">{user.email || user.name}</span>
+                        <span
+                            className="max-w-24 sm:max-w-none truncate text-sm font-semibold text-zinc-700"
+                            title={user.email}
+                        >
+                            {user.email}
+                        </span>
                         <button 
                             onClick={logout}
-                            className="max-lg:hidden text-xs text-blue-600 hover:underline"
+                            className="text-xs text-blue-600 hover:underline"
                         >
-                            Cerrar sesión
+                            Log out
                         </button>
                     </div>
                     <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center">
