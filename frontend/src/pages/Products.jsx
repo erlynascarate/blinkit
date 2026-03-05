@@ -30,15 +30,25 @@ const Products = () => {
     }, [searchTerm, searchParams, setSearchParams])
 
     return (
-        <main className="container mx-auto py-3 px-3">
-            <h2 className="mb-4 font-bold">
-                {searchTerm ? `Showing results for "${searchTerm}"` : "Showing all Products"}
-            </h2>
-            <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                {products.map(product => (
-                    <Product key={product.id} product={product} />
-                ))}
-            </section>
+        <main className="flex flex-col flex-1 container mx-auto py-3 px-3">
+            {products.length === 0 ? (
+                <div className="flex flex-col flex-1 justify-center items-center gap-4">
+                    <img className="size-70" src="https://blinkit.com/57070263a359a92dc0fe.png" alt="No products found" />
+                    <h2 className="text-2xl font-bold">Nothing here yet</h2>
+                    <p className="text-gray-600 text-center">Try adjusting your search to find what you're looking for</p>
+                </div>
+            ) : (
+                <>
+                    <h2 className="mb-4 font-bold">
+                        {searchTerm ? `Showing results for "${searchTerm}"` : "Showing all Products"}
+                    </h2>
+                    <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                        {products.map(product => (
+                            <Product key={product.id} product={product} />
+                        ))}
+                    </section>
+                </>
+            )}
         </main>
     );
 }
