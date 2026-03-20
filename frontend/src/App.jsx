@@ -5,14 +5,16 @@ import Products from "./pages/Products";
 import Footer from "./components/Footer";
 import LoginPage from "./pages/LoginPage";
 import Register from "./pages/Register";
+import Cart from "./pages/Cart";
 
 function App() {
 	const location = useLocation()
 	const isLoginRoute = location.pathname === "/login"
 	const isRegisterRoute = location.pathname === "/register"
+	const isCartRoute = location.pathname === "/cart"
 	const backgroundLocation = location.state?.backgroundLocation
 
-	const modalBackgroundLocation = backgroundLocation || (isLoginRoute || isRegisterRoute ? { ...location, pathname: "/" } : null)
+	const modalBackgroundLocation = backgroundLocation || (isLoginRoute || isRegisterRoute || isCartRoute ? { ...location, pathname: "/" } : null)
 
 	return (
 		<>
@@ -30,6 +32,12 @@ function App() {
 			<Routes>
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/register" element={<Register />} />
+			</Routes>
+		)}
+
+		{isCartRoute && (
+			<Routes>
+				<Route path="/cart" element={<Cart />} />
 			</Routes>
 		)}
 		
